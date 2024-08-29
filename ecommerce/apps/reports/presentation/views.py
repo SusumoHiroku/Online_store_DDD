@@ -4,6 +4,8 @@ from rest_framework.decorators import action
 from apps.reports.application.use_cases import ReportService
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from rest_framework.pagination import PageNumberPagination
+
 
 class ReportViewSet(viewsets.ViewSet):
     service = ReportService()
@@ -18,4 +20,6 @@ class ReportViewSet(viewsets.ViewSet):
     def sold_products(self, request):
         filters = request.query_params.dict()
         report = self.service.get_sold_products_report(filters)
-        return Response(report, status=status.HTTP_200_OK)
+        paginator = PageNumberPagination()
+        paginated_report = paginator.paginate_queryset(report, request)
+        return paginator.get_paginated_response(paginated_report)

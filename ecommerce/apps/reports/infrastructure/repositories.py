@@ -5,6 +5,13 @@ from apps.orders.domain.models import OrderStatus
 class ReportRepository:
 
     def get_sold_products_report(self, filters: Dict = None) -> List[Dict]:
+        """
+            Получает отчет по проданным товарам с применением фильтров по категории и подкатегории.
+
+            :param filters: Словарь фильтров, включающий параметры для категорий и подкатегорий.
+            :return: Список словарей, содержащих информацию о проданных товарах.
+
+        """
         filters = filters or {}
 
         query = OrderORM.objects.filter(status=OrderStatus.SOLD.value)

@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from apps.products.application.use_cases import ProductService
 from apps.products.presentation.serializers import ProductSerializer
+from rest_framework.pagination import PageNumberPagination
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
 
@@ -19,8 +20,11 @@ class ProductViewSet(viewsets.ViewSet):
     def list(self, request):
         filters = request.query_params.dict()
         products = self.service.list_products(filters)
-        serializer = ProductSerializer(products, many=True)
-        return Response(serializer.data)
+        paginator = PageNumberPagination()
+        paginated_products = paginator.paginate_queryset(products, request)
+
+        serializer = ProductSerializer(paginated_products, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     @swagger_auto_schema(request_body=ProductSerializer)
     def create(self, request):

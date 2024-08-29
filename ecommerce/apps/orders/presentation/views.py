@@ -4,6 +4,8 @@ from rest_framework.decorators import action
 from apps.orders.application.use_cases import OrderService
 from apps.orders.presentation.serializers import OrderSerializer, OrderReserveSerializer
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework.pagination import PageNumberPagination
+
 
 
 class OrderViewSet(viewsets.ViewSet):
@@ -11,8 +13,10 @@ class OrderViewSet(viewsets.ViewSet):
 
     def list(self, request):
         orders = self.service.order_repo.get_all()
-        serializer = OrderSerializer(orders, many=True)
-        return Response(serializer.data)
+        paginator = PageNumberPagination()
+        paginated_orders = paginator.paginate_queryset(orders, request)
+        serializer = OrderSerializer(paginated_orders, many=True)
+        return paginator.get_paginated_response(serializer.data)
 
     def retrieve(self, request, pk=None):
         order = self.service.order_repo.get_by_id(pk)
