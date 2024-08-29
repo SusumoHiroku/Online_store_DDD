@@ -18,3 +18,8 @@ class OrderSerializer(serializers.Serializer):
         instance.status = OrderStatus(validated_data.get('status', instance.status.value))
         instance.updated_at = validated_data.get('updated_at', instance.updated_at)
         return instance
+
+
+class OrderReserveSerializer(serializers.Serializer):
+    product_id = serializers.IntegerField(required=True)
+    quantity = serializers.IntegerField(required=True)

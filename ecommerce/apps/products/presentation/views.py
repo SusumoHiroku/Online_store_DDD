@@ -3,16 +3,26 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from apps.products.application.use_cases import ProductService
 from apps.products.presentation.serializers import ProductSerializer
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 class ProductViewSet(viewsets.ViewSet):
     service = ProductService()
 
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter('category', openapi.IN_QUERY, description="Filter by category", type=openapi.TYPE_STRING),
+            openapi.Parameter('subcategory', openapi.IN_QUERY, description="Filter by subcategory",
+                              type=openapi.TYPE_STRING)
+        ]
+    )
     def list(self, request):
         filters = request.query_params.dict()
         products = self.service.list_products(filters)
         serializer = ProductSerializer(products, many=True)
         return Response(serializer.data)
 
+    @swagger_auto_schema(request_body=ProductSerializer)
     def create(self, request):
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():

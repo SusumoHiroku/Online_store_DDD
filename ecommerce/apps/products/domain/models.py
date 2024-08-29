@@ -1,9 +1,8 @@
-from dataclasses import dataclass
+from dataclasses import dataclass,field
 from typing import Optional
 
 @dataclass
 class Product:
-    id: int
     name: str
     description: str
     price: float
@@ -11,6 +10,8 @@ class Product:
     category: Optional[str] = None
     subcategory: Optional[str] = None
     discount: float = 0.0
+    id: Optional[int] = field(default=None)
+
 
     def apply_discount(self, discount: float):
         """Применяет скидку к товару."""

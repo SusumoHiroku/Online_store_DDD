@@ -2,7 +2,9 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from apps.orders.application.use_cases import OrderService
-from apps.orders.presentation.serializers import OrderSerializer
+from apps.orders.presentation.serializers import OrderSerializer, OrderReserveSerializer
+from drf_yasg.utils import swagger_auto_schema
+
 
 class OrderViewSet(viewsets.ViewSet):
     service = OrderService()
@@ -19,6 +21,10 @@ class OrderViewSet(viewsets.ViewSet):
             return Response(serializer.data)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    @swagger_auto_schema(
+        request_body=OrderReserveSerializer,
+        responses={201: OrderSerializer}
+    )
     @action(detail=False, methods=['post'])
     def reserve(self, request):
         product_id = request.data.get('product_id')
