@@ -36,7 +36,6 @@ class ProductViewSet(viewsets.ViewSet):
             return Response(ProductSerializer(product).data)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @action(detail=True, methods=['delete'])
     def destroy(self, request, pk=None):
         self.service.delete_product(pk)
         return Response(status=status.HTTP_204_NO_CONTENT)
