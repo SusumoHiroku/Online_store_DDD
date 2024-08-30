@@ -1,4 +1,3 @@
-# apps/orders/infrastructure/models.py
 from django.db import models
 from apps.products.infrastructure.models import Product
 
